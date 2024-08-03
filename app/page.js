@@ -1,95 +1,90 @@
+'use client'
+
 import Image from "next/image";
-import styles from "./page.module.css";
-
+import { useState,useEffect } from "react";
+import {getDoc,collection,addDoc} from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore"; 
+import {database} from '@/firebase';
+import { Box, Container, Typography, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, FormControl, RadioGroup, FormControlLabel, Radio, Slider } from '@mui/material';
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const [itemName,setItemName]=useState('');
+  const [quantity,setQuantity]=useState('');
+  const [category,setCategory]=useState('');
+  const [documentId, setDocumentId] = useState('');
+  const handleSubmission = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const newDocRef = await addDoc(collection(database, "inventory"), {
+        itemName:itemName,
+        quantity:quantity,
+        category:category
+      });
+      console.log("Document written with ID: ", newDocRef.id);
+  
+      setCategory('')
+      setItemName('')
+      setQuantity('')
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  };
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+  return(
+
+    
+<Box
+  sx={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100vh',
+  }}
+>
+  <Container maxWidth="sm">
+    <Typography variant="h4">Inventory Management</Typography>
+    <Box mt={4}>
+      <form onSubmit={handleSubmission}>
+        <TextField
+          label="Item Name"
+          variant="outlined"
+          value={itemName}
+          onChange={(e) => setItemName(e.target.value)}
+          fullWidth
+          margin="normal"
         />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+        <TextField
+          label="Quantity"
+          variant="outlined"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+          type="number"
+          fullWidth
+          margin="normal"
+        />
+        <FormControl component="fieldset" fullWidth margin="normal">
+          <Typography variant="subtitle1" gutterBottom>
+            Category:
+          </Typography>
+          <RadioGroup
+            row
+            aria-label="category"
+            name="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <FormControlLabel value="electronics" control={<Radio />} label="Electronics" />
+            <FormControlLabel value="clothing" control={<Radio />} label="Clothing" />
+            <FormControlLabel value="furniture" control={<Radio />} label="Furniture" />
+          </RadioGroup>
+        </FormControl>
+        <Button type="submit" variant="contained" color="primary">
+          Save
+        </Button>
+      </form>
+    </Box>
+  </Container>
+</Box>
+  )
 }
+
