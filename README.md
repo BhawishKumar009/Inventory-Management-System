@@ -1,5 +1,9 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Project Details
+The Inventory Management System project, created during the HeadStarter SWE Fellowship Week 2, involved setting up a Next.js project with Material UI components, implementing a Firebase backend for data storage, and developing a form to add, delete, and update pantry items. By utilizing these technologies, the project aimed to provide users with a seamless and efficient way to manage their pantry inventory.
+
+
 ## Getting Started
 
 First, run the development server:
